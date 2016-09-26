@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>todoList</title>
+    <script src="build/react.js"></script>
+    <script src="build/react-dom.js"></script>
+    <script src="build/browser.min.js"></script>
+    <script src="build/jquery.min.js"></script>
+    <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
+    <style type="text/css">
+    .input-group,button{
+      margin-bottom: 10px!important;
+    }
+    .btn-danger{
+      margin-left: 10px!important;
+    }
+    .wrap{
+      width:80%;
+      margin-left: auto;margin-right: auto;
+    }
+    </style>
+  </head>
+  <body>
+    
+    <div id="container"></div>
+   
+    <script type="text/babel">
+  
+      var TodoComponent = React.createClass({
+        getInitialState: function() {
+          return {
+            text:"",
+            doingList:[],
+            doneList:[] 
+          };
+        },
+        inputHandler:function(event){
+
+          var val = event.target.value;
+          this.setState({text:val});
+        },
+        addList:function(event){
+          if((event.type == "click")||(event.keyCode == 13)){
+            console.log("Add");
+            var curList = this.state.doingList;
+            curList.push(this.state.text);
+            this.setState({doingList:curList});
+          }
+          
+        },
+        removeList:function(index,type){
+          console.log("remove "+index+" from "+type );
+          var curList=[];
+
+          switch (type) {
+            case "Doing":
+               curList = this.state.doingList;
+               curList.splice(index,1);
+               this.setState({doingList:curList});
+              break;
+            case "Done":
+               curList = this.state.doneList;
+               curList.splice(index,1);
+               this.setState({doneList:curList});
+              break;
+            default:
+              // statements_def
+              break;
+          }
+        },
+        toDoing:function(index){
+          console.log("done->doing");
+          var item = this.state.doneList[index];
+          var doneList = this.state.doneList;
+          doneList.splice(index,1);
+          var doingList = this.state.doingList;
+          doingList.push(item);
+          this.setState({doingList:doingList,doneList:doneList});
+        },
+        toDone:function(index){
+          console.log("doing->done");
+          var item = this.state.doingList[index];
+          var doingList = this.state.doingList;
+          doingList.splice(index,1);
+          var doneList = this.state.doneList;
+          doneList.push(item);
+          this.setState({doingList:doingList,doneList:doneList});
+        },
+        render: function() {
+          return (
+            <div className="wrap">
+              <div className="page-header"><h1>TodoList based on React  <small>By PSC</small></h1></div>
+             
+              <InputComponent inputHandler={this.inputHandler} clickHandler={this.addList} text={this.state.text==""}/>
+              <DoingListComponent list={this.state.doingList} removeHandler={this.removeList} moveHandler={this.toDone}/>
+              <DoneListComponent list={this.state.doneList} removeHandler={this.removeList} moveHandler={this.toDoing}/>
+            </div>
+          );
+        }
+      });
+      
+      //输入框组件
+      var InputComponent = React.createClass({
+    
+        render: function() {
+          var btnText = this.props.text?"Please enter your plan":"Click to add";
+          return (
+            <div>
+
+              <label htmlFor="input-text">To do something</label>
+              <div className="input-group">
+              <input type="text" id="input-text" className="form-control" placeholder="PLease enter your plan" onChange={this.props.inputHandler} onKeyDown={this.props.clickHandler}/>
+               <span className="input-group-addon"><span className="glyphicon glyphicon-tag"></span></span>
+              </div>
+
+              <button type="button" className="btn btn-primary btn-block" onClick={this.props.clickHandler} disabled={this.props.text}>{btnText}</button>
+            </div>
+          );
+        }
+      
+      });
+      //列表展示组件
+      var DoingListComponent = React.createClass({
+
+        render: function() {
+          var nList = [];
+
+         var nList = this.props.list.map(function(item,index){
+            return <li key={index} className="list-group-item">
+                        <p className="lead">
+                        <span className="label label-default" style={{marginRight:"10px"}}>{index+1}</span>
+                        {item}
+                        <button type="button" className="btn btn-danger pull-right" onClick={this.props.removeHandler.bind(null,index,"Doing")}>remove</button>
+                        <button type="button" className="btn btn-primary pull-right" onClick={this.props.moveHandler.bind(null,index)}>done</button>
+                        </p> 
+                      </li>;
+          },this)
+
+          return (
+            <div className="panel panel-info" >
+              <div className="panel-heading">Doing list</div>
+              <p className={this.props.list.length==0?"show":"hidden"} style={{textAlign:"center"}}>This list is empty now.</p>
+              <ol className="list-group clearfix">
+                {nList}
+              </ol>
+            </div>
+          );
+        }
+      
+      });
+      
+      var DoneListComponent = React.createClass({
+        render: function() {
+          var nList = [];
+
+         var nList = this.props.list.map(function(item,index){
+            return <li key={index} className="list-group-item">
+                        <p>
+                        <span className="label label-default" style={{marginRight:"10px"}}>{index+1}</span>
+                        {item}
+                        <button type="button" className="btn btn-danger pull-right" onClick={this.props.removeHandler.bind(null,index,"Done")}>remove</button>
+                        <button type="button" className="btn btn-info pull-right" onClick={this.props.moveHandler.bind(null,index)}>not done</button>
+                        </p> 
+                      </li>;
+          },this)
+
+          return (
+            <div className="panel panel-danger">
+              <div className="panel-heading">Done list</div>
+              <p className={this.props.list.length==0?"show":"hidden"} style={{textAlign:"center"}}>This list is empty now.</p>
+              <ol className="list-group clearfix">
+                {nList}
+              </ol>
+            </div>
+          );
+        }
+      
+      });
+
+      ReactDOM.render(
+        <TodoComponent />,
+        document.getElementById("container")
+        );
+
+    </script>
+  </body>
+</html>
+  
