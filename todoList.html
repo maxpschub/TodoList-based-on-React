@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <title>todoList</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="build/react.js"></script>
     <script src="build/react-dom.js"></script>
     <script src="build/browser.min.js"></script>
@@ -140,7 +141,10 @@
           return (
             <div className="panel panel-info" >
               <div className="panel-heading">Doing list</div>
-              <p className={this.props.list.length==0?"show":"hidden"} style={{textAlign:"center"}}>This list is empty now.</p>
+              {(!this.props.list.length)
+                ?<p style={{textAlign:"center"}}>This. list is empty now.</p>
+                : null
+              }
               <ol className="list-group clearfix">
                 {nList}
               </ol>
@@ -168,7 +172,10 @@
           return (
             <div className="panel panel-danger">
               <div className="panel-heading">Done list</div>
-              <p className={this.props.list.length==0?"show":"hidden"} style={{textAlign:"center"}}>This list is empty now.</p>
+              {(!this.props.list.length)
+                ?<p style={{textAlign:"center"}}>This. list is empty now.</p>
+                : null
+              }
               <ol className="list-group clearfix">
                 {nList}
               </ol>
