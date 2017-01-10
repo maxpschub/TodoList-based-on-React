@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Input from './input.js'
 import DoingList from './doingList.js'
 import DoneList from './doneList.js'
+import styles from '../css/main.css'
 
 //主组件
 class TodoList extends Component{
@@ -66,7 +67,7 @@ class TodoList extends Component{
     render() {
       return (
         <div className="wrap">
-          <div className="page-header"><h1>TodoList based on React  <small>By PSC</small></h1></div>
+          <div className="page-header"><h1 className={styles.blue}>TodoList based on React  <small>By PSC</small></h1></div>
           <Input inputHandler={this.inputHandler.bind(this)} clickHandler={this.addList.bind(this)} text={this.state.text==""}/>
           <DoingList list={this.state.doingList} removeHandler={this.removeList.bind(this)} moveHandler={this.toDone.bind(this)}/>
           <DoneList list={this.state.doneList} removeHandler={this.removeList.bind(this)} moveHandler={this.toDoing.bind(this)}/>
